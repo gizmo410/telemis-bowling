@@ -1,0 +1,60 @@
+// Components used from bootstrap
+@import "libs/bootstrap/bootstrap.less";
+@import "libs/angular-motion/fade.less";
+@import "libs/angular-motion/fade-and-scale.less";
+@import "libs/angular-motion/fade-and-slide.less";
+@import "libs/angular-motion/flip.less";
+@import "libs/angular-motion/slide.less";
+@import "libs/ng-grid/global.less";
+@import "date_time_picker_fix.less";
+
+@FlemishYellow: #FFE615;
+
+@navbar-default-bg: @FlemishYellow;
+
+@panel-info-heading-bg: @FlemishYellow;
+@panel-info-border: @FlemishYellow;
+
+body {
+  //background-color: #EEEEEE;
+  background-image: url("../../images/bodybg.jpg");
+  padding-top: 70px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-group.required .control-label:after {
+  content: "*";
+  color: red;
+}
+
+.footer-hr {
+  background-color: black;
+  margin: 20px 0; // top-bottom & right-left
+  height: 1px;
+}
+
+.alertContainer {
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+  z-index: 1001;
+}
+
+.logo-container {
+
+  width: 236px;
+
+}
+
+.ng-invalid.ng-dirty {
+  border-color: red;
+  outline-color: red;
+}
+
+.ng-valid.ng-dirty {
+  border-color: green;
+  outline-color: green;
+}

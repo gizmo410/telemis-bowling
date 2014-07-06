@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html ng-app="midasApp">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Midas Home page">
+
+    <title>Midas</title>
+
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="/midas/styles/css/main.css">
+
+</head>
+
+<body translate-cloak ng-controller="MainCtrl">
+
+<noscript>
+    <div>
+        Your web browser must have JavaScript enabled
+        in order for this application to display correctly.
+    </div>
+</noscript>
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#/home">Midas</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li ng-class="isActiveLink('home')"><a href="#/home">{{ 'navbar_mijn_midas' | translate }}</a></li>
+                <li ng-class="isActiveLink('taken')"><a href="#/taken">{{ 'navbar_taken' | translate }}</a></li>
+                <li ng-class="isActiveLink('controls')"><a href="#/controles">{{ 'navbar_controls' | translate }}</a>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="{{ 'navbar_zoeken' | translate }}">
+                </div>
+                <button type="submit" class="btn btn-default" ng-click="zoeken()">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </form>
+            <p class="navbar-text navbar-right">
+                {{ 'navbar_ingelogd_als' | translate }} <a href="javascript:void(0);" class="navbar-link">
+                {{user.username }}</a>
+            </p>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</nav>
+
+<!--<nav class="navbar navbar-default" role="navigation">-->
+<!--<div class="container-fluid">-->
+<!--&lt;!&ndash; toggle grouped for better mobile display &ndash;&gt;-->
+<!--<div class="navbar-header">-->
+<!--<button type="button" class="navbar-toggle" data-toggle="collapse"-->
+<!--data-target="#bs-example-navbar-collapse-1">-->
+<!--<span class="sr-only">Toggle navigation</span>-->
+<!--<span class="icon-bar"></span>-->
+<!--<span class="icon-bar"></span>-->
+<!--<span class="icon-bar"></span>-->
+<!--</button>-->
+<!--</div>-->
+<!--&lt;!&ndash; Collect the nav links, forms, and other content for toggling &ndash;&gt;-->
+<!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">-->
+
+<!--</div>-->
+<!--&lt;!&ndash; /.navbar-collapse &ndash;&gt;-->
+<!--</div>-->
+<!--&lt;!&ndash; /.container-fluid &ndash;&gt;-->
+<!--</nav>-->
+
+
+<div class="container-fluid">
+
+    <!--    APPLICATION WIDE NOTIFICATIONS     -->
+    <div class="row">
+        <div class="col-md-12">
+            <div ng-controller="AlertCtrl" class="alertContainer">
+                <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">
+                    <p>{{ alert.msg }}</p>
+                </alert>
+            </div>
+        </div>
+    </div>
+
+    <ng-view class="row"></ng-view>
+
+    <footer class="row">
+        <div class="col-md-12">
+            <hr class="footer-hr"/>
+            <div class="logo-container">
+                <img src="images/logo.png" alt="Midas Logo" class="img-responsive" title="Midas" id="logo">
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!--    EXTERNAL DEPENDENCIES -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/midas/libs/jquery/jquery-1.11.1.min.js"></script>
+<script src="/midas/libs/sockjs/sockjs-0.3.min.js"></script>
+<script src="/midas/libs/stomp/stomp.min.js"></script>
+<script src="/midas/libs/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular.js"></script>
+<script src="/midas/libs/angular-1.2.17/i18n/angular-locale_nl-nl.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular-route.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular-resource.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular-cookies.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular-animate.js"></script>
+<script src="/midas/libs/angular-1.2.17/angular-sanitize.js"></script>
+<script src="/midas/libs/http-auth-interceptor.js"></script>
+<script src="/midas/libs/angular-translate/angular-translate.min.js"></script>
+<script src="/midas/libs/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+<script src="/midas/libs/angular-translate-storage-local/angular-translate-storage-local.min.js"></script>
+<script src="/midas/libs/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
+<script src="/midas/libs/angular-ui/ng-grid/ng-grid-2.0.11.min.js"></script>
+<script src="/midas/libs/angular-ui/ui-bootstrap/ui-bootstrap-tpls-0.11.0.min.js"></script>
+<script src="/midas/libs/angular-ui/ui-utils/ui-utils.min.js"></script>
+<script src="/midas/libs/angular-strap/angular-strap.js"></script>
+<script src="/midas/libs/angular-strap/angular-strap.tpl.js"></script>
+
+<!--    INTERNAL DEPENDENCIES -->
+<script src="/midas/javascript/app/service/services.js"></script>
+<script src="/midas/javascript/app/controller/controllers.js"></script>
+<script src="/midas/javascript/app/midas.js"></script>
+
+</body>
+
+</html>

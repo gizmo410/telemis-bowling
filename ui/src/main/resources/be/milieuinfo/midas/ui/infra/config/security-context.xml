@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:openam="be:milieuinfo:security:openam:spring:security:config"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+       be:milieuinfo:security:openam:spring:security:config http://www.milieuinfo.be/schemas/security/config/openam-spring-security.xsd">
+
+    <openam:web publicServerUrl="${openam.publicserverurl}" backendServerUrl="${openam.serverurl}"
+                consumerUsername="${consumer.username}" consumerSecret="${consumer.secret}">
+        <openam:systemuser/>
+    </openam:web>
+
+    <sec:http entry-point-ref="openam.entryPoint" use-expressions="true" request-matcher="regex">
+        <!-- Healthcheck F5 appl. switch -->
+        <sec:intercept-url pattern="\A/healthcheck\.jsp\Z" access="permitAll()"/>
+        <sec:intercept-url pattern="\A/libs/.*\Z" access="permitAll()"/>
+        <sec:intercept-url pattern="\A/images/.*\Z" access="permitAll()"/>
+        <sec:intercept-url pattern="\A/styles/.*\Z" access="permitAll()"/>
+        <sec:intercept-url pattern="\A/javascript/.*\Z" access="permitAll()"/>
+        <sec:intercept-url pattern="\A/languages/.*\Z" access="permitAll()"/>
+        <!-- TODO authorization -->
+        <sec:intercept-url pattern="\A/.*\Z" access="isFullyAuthenticated()"/>
+        <sec:custom-filter ref="openam.authenticationFilter" position="FORM_LOGIN_FILTER"/>
+        <sec:custom-filter ref="openam.logoutFilter" position="LOGOUT_FILTER"/>
+    </sec:http>
+
+    <sec:authentication-manager alias="authenticationManager">
+        <sec:authentication-provider ref="openam.authenticationProvider"/>
+    </sec:authentication-manager>
+
+    <bean id="loggerListener" class="org.springframework.security.authentication.event.LoggerListener"/>
+
+    <beans profile="lokaal">
+
+        <openam:mock userdetails-ref="userdetailsService"/>
+        <bean id="userdetailsService"
+              class="be.milieuinfo.security.openam.spring.security.mock.InMemoryUserdetailsService">
+            <property name="userMap">
+                <map>
+                    <entry key="kapitein">
+                        <map>
+                            <entry key="roles" value="EjrInvuller"/>
+                            <entry key="attributes"
+                                   value="sn=Zeppos,givenName=Kapitein,mail=kapitein@mmis.be,persoonid=g5t7usThrhfj-M17S-gQ5A,organisatiecodegetypeerd=KBOONDERNEMINGSNUMMER:0401574852:,cn=MDO Invuller voor UMICORE,referenties=ejr:fb134c6e989f4676808fa950b48e7d43"/>
+                        </map>
+                    </entry>
+                </map>
+            </property>
+        </bean>
+
+    </beans>
+</beans>

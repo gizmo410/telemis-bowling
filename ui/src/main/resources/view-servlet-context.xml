@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <mvc:annotation-driven/>
+
+    <mvc:default-servlet-handler/>
+
+    <util:properties id="validationMessageProperties"
+                     location="classpath:be/milieuinfo/midas/domain/infra/i18n/validation_messages_nl.properties"/>
+
+    <util:properties id="messageProperties" location="classpath:be/milieuinfo/midas/ui/i18n/messages_nl.properties"/>
+
+    <bean id="jacksonMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"/>
+
+    <bean id="viewController" class="be.milieuinfo.midas.ui.controller.ViewController">
+        <property name="messageProperties" ref="messageProperties"/>
+        <property name="validationMessageProperties" ref="validationMessageProperties"/>
+        <property name="mapper" ref="jacksonMapper"/>
+    </bean>
+
+</beans>

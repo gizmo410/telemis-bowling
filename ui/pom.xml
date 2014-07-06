@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.telemis.bowling</groupId>
+        <artifactId>bowling</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>bowling-ui</artifactId>
+
+    <packaging>war</packaging>
+
+    <name>bowling User Interface</name>
+
+    <properties>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+    </properties>
+
+    <dependencies>
+
+        <!--    INTERNAL -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bowling-rest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--    WEB     -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--    WEBSOCKET    -->
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+        </dependency>
+        <!-- Required when the "stomp-broker-relay" profile is enabled -->
+        <dependency>
+            <groupId>org.projectreactor</groupId>
+            <artifactId>reactor-tcp</artifactId>
+        </dependency>
+
+        <!--    TESTING     -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-logging-log4j</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-dbcp</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path-assert</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>bowling</finalName>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/filteredResources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <!-- Copy static web files before executing gwt:run -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <webappDirectory>${webappDirectory}</webappDirectory>
+                    <!-- we must exclude the svn folders -->
+                    <warSourceExcludes>
+                        <!--[CDATA[**/.svn,**/.svn/**,**/_svn,**/_svn/**]]>-->
+                        styles/less/**
+                    </warSourceExcludes>
+                    <packagingExcludes>
+                        styles/less/**/*.less
+                    </packagingExcludes>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Vendor>info@milieuinfo.be</Implementation-Vendor>
+                            <Implementation-Title>${project.name} - ${project.groupId} - ${project.artifactId}
+                            </Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                            <Implementation-BuildDate>${timestamp}</Implementation-BuildDate>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.lesscss</groupId>
+                <artifactId>lesscss-maven-plugin</artifactId>
+                <version>${lesscss.version}</version>
+                <configuration>
+                    <!--<lessJs>${basedir}/src/main/webapp/libs/less-1.7.1.min.js</lessJs>-->
+                    <sourceDirectory>${basedir}/src/main/webapp/styles/less</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}/styles/css</outputDirectory>
+                    <includes>
+                        <include>main.less</include>
+                    </includes>
+                    <compress>true</compress>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.searls</groupId>
+                <artifactId>jasmine-maven-plugin</artifactId>
+                <version>${jasmine.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <preloadSources>
+                        <source>${project.basedir}/src/main/webapp/libs/jquery/jquery-1.11.1.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/sockjs/sockjs-0.3.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/stomp/stomp.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-mocks.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-route.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-resource.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-cookies.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-animate.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-1.2.17/angular-sanitize.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/http-auth-interceptor.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-strap/angular-strap.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-strap/angular-strap.tpl.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-ui/ng-grid/ng-grid-2.0.11.debug.js
+                        </source>
+                        <source>
+                            ${project.basedir}/src/main/webapp/libs/angular-ui/ui-bootstrap/ui-bootstrap-tpls-0.11.0.js
+                        </source>
+                        <source>
+                            ${project.basedir}/src/main/webapp/libs/angular-ui/ui-utils/ui-utils.min.js
+                        </source>
+                        <source>${project.basedir}/src/main/webapp/libs/angular-translate/angular-translate.js</source>
+                        <source>
+                            ${project.basedir}/src/main/webapp/libs/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js
+                        </source>
+                        <source>
+                            ${project.basedir}/src/main/webapp/libs/angular-translate-storage-local/angular-translate-storage-local.min.js
+                        </source>
+                        <source>
+                            ${project.basedir}/src/main/webapp/libs/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js
+                        </source>
+                        <source>${project.basedir}/src/main/webapp/libs/bootstrap-3.1.1-dist/js/bootstrap.min.js
+                        </source>
+                    </preloadSources>
+                    <jsSrcDir>src/main/webapp/javascript</jsSrcDir>
+                    <jsTestSrcDir>src/test/webapp/javascript</jsTestSrcDir>
+                    <specIncludes>
+                        <include>*Spec.js</include>
+                    </specIncludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+
+</project>

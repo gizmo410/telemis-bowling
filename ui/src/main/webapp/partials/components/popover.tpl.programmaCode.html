@@ -1,0 +1,17 @@
+<div class="popover">
+    <div class="arrow"></div>
+    <h3 class="popover-title">{{popover.title}}</h3>
+
+    <div class="popover-content">
+        <p ng-bind-html="content" style="min-width:300px;"></p>
+
+
+
+        <div class="btn-toolbar">
+            <button type="button" class="btn btn-default" ng-click="$hide()">
+                {{ 'general_actions_sluiten' | translate }}
+            </button>
+        </div>
+    </div>
+
+</div>
