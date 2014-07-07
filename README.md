@@ -17,8 +17,3 @@ Un Strike compte 15 plus les quilles des 3 lancers suivants, soit 60 au maximum 
 Lors d'un strike ou d'un spare à la dernière frame, le joueur peut effectuer des lancers supplémentaires pour permettre le calcul des points de la dernière frame.
  
 Le score parfait maximum est ainsi de 300.
- 
-Dans les exemples ci-dessous:
-Le Spare est symbolisé par une barre dans la dernière case de la frame sur la feuille de score.
-Le Strike est symbolisé par une croix dans la 1ère case de la frame sur la feuille de score.
-La dernière frame possède 4 cases pour permettre de compléter Spare ou Strike à cette frame avec les lancers supplémentaires.
