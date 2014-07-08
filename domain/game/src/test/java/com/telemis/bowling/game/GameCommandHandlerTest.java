@@ -6,8 +6,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.telemis.bowling.game.DataFixtures.CREATE_GAME;
-import static com.telemis.bowling.game.DataFixtures.GAME_CREATED;
+import static com.telemis.bowling.game.DataFixtures.*;
 
 /**
  * @since 04/07/14
@@ -25,12 +24,32 @@ public class GameCommandHandlerTest {
     }
 
     @Test
-    public void when_MaakControleCommandReceived_then_ControleAangemaaktEventIsTriggered() {
+    public void when_CreateGameCommandReceived_then_GameCreatedEventIsTriggered() {
 
         fixture
                 .given()
                 .when(CREATE_GAME)
                 .expectEvents(GAME_CREATED);
+
+    }
+
+    @Test
+    public void when_RegisterPlayerThrowCommandReceived_then_PlayerScoreUpdatedEventIsTriggered() {
+
+        fixture
+                .given(GAME_CREATED)
+                .when(REGISTER_PLAYER_THROW)
+                .expectEvents(PLAYER_SCORE_UPDATED);
+
+    }
+
+    @Test
+    public void when_StopGameCommandReceived_then_GameStoppedEventIsTriggered() {
+
+        fixture
+                .given(GAME_CREATED)
+                .when(STOP_GAME)
+                .expectEvents(GAME_STOPPED);
 
     }
 

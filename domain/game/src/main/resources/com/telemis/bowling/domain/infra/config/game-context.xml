@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:axon="http://www.axonframework.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core.xsd">
+
+    <axon:event-sourcing-repository id="gameRepository"
+                                    aggregate-type="com.telemis.bowling.game.GameAR"
+                                    event-bus="eventBus" event-store="eventStore"/>
+
+    <!--<bean class="org.axonframework.eventsourcing.HybridJpaRepository">-->
+    <!--<constructor-arg name="aggregateType" value="com.telemis.bowling.game.GameAR"/>-->
+    <!--<constructor-arg name="entityManagerProvider" ref="entityManagerProvider"/>-->
+    <!--<property name="eventBus" ref="eventBus"/>-->
+    <!--<property name="eventStore" ref="eventStore"/>-->
+    <!--</bean>-->
+
+</beans>

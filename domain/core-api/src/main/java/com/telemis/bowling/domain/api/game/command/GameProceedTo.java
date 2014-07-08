@@ -30,7 +30,7 @@ public class GameProceedTo extends ProceedTo implements Serializable {
     @SuppressWarnings("unused")
     public GameProceedTo(String gameIdentifier, String newStatus) {
         super(newStatus);
-        this.gameIdentifier = gameIdentifier;
+        this.gameIdentifier = checkNotNull(gameIdentifier, "Game identifier cannot be null");
     }
 
     /**
@@ -39,7 +39,7 @@ public class GameProceedTo extends ProceedTo implements Serializable {
      * @param newStatus
      */
     public GameProceedTo(String newStatus) {
-        super(checkNotNull(newStatus, "newStatus is null"));
+        super(checkNotNull(newStatus, "newStatus cannot be null"));
     }
 
     public String getGameIdentifier() {
@@ -54,7 +54,7 @@ public class GameProceedTo extends ProceedTo implements Serializable {
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("gameIdentifier", gameIdentifier)
-                .add("newStatus", newStatus)
+                .add(NEW_STATUS, newStatus)
                 .toString();
     }
 }

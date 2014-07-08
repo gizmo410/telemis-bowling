@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bowling-game</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bowling-query</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -90,7 +95,7 @@
                     </excludes>
                     <archive>
                         <manifestEntries>
-                            <Implementation-Vendor>info@milieuinfo.be</Implementation-Vendor>
+                            <Implementation-Vendor>hulety@gmail.com</Implementation-Vendor>
                             <Implementation-Title>${project.name} - ${project.groupId} - ${project.artifactId}
                             </Implementation-Title>
                             <Implementation-Version>${project.version}</Implementation-Version>

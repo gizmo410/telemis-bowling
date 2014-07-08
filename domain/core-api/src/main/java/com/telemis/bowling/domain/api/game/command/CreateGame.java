@@ -6,6 +6,8 @@ import org.axonframework.domain.IdentifierFactory;
 
 import java.io.Serializable;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * @since 03/07/14
  */
@@ -14,15 +16,15 @@ public class CreateGame implements Serializable {
     private static final long serialVersionUID = 1353352370529653561L;
 
     @TargetAggregateIdentifier
-    private String identifier = IdentifierFactory.getInstance().generateIdentifier();
+    private final String identifier = IdentifierFactory.getInstance().generateIdentifier();
     private int numberOfPlayers;
 
     // Needed by Axon
     protected CreateGame() {
     }
 
-    public CreateGame(final String identifier, final int numberOfPlayers) {
-        this.identifier = identifier;
+    public CreateGame(final int numberOfPlayers) {
+        checkArgument(numberOfPlayers > 0, "We need at least one player to start a game");
         this.numberOfPlayers = numberOfPlayers;
     }
 

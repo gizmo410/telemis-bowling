@@ -15,14 +15,18 @@ public class GameCreated implements Serializable {
 
     private String identifier;
     private Set<GamePlayer> players;
+    private GamePlayer currentPlayer;
 
     protected GameCreated() {
 
     }
 
-    public GameCreated(final String identifier, final Set<GamePlayer> players) {
+    public GameCreated(final String identifier,
+                       final Set<GamePlayer> players,
+                       final GamePlayer currentPlayer) {
         this.identifier = identifier;
         this.players = players;
+        this.currentPlayer = currentPlayer;
     }
 
     public Set<GamePlayer> getPlayers() {
@@ -33,11 +37,16 @@ public class GameCreated implements Serializable {
         return identifier;
     }
 
+    public GamePlayer getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("identifier", identifier)
                 .add("players", players)
+                .add("currentPlayer", currentPlayer)
                 .toString();
     }
 }

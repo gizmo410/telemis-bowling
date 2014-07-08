@@ -1,7 +1,7 @@
-CREATE SEQUENCE midas.hibernate_sequence;
+CREATE SEQUENCE bowling.hibernate_sequence;
 
 /* Axon 2.1 */
-CREATE TABLE midas.AssociationValueEntry (
+CREATE TABLE bowling.AssociationValueEntry (
   id               INT8 NOT NULL,
   associationKey   VARCHAR(255),
   associationValue VARCHAR(255),
@@ -10,7 +10,7 @@ CREATE TABLE midas.AssociationValueEntry (
   CONSTRAINT PK_AssociationValueEntry PRIMARY KEY (id)
 );
 
-CREATE TABLE midas.DomainEventEntry (
+CREATE TABLE bowling.DomainEventEntry (
   aggregateIdentifier VARCHAR(255) NOT NULL,
   sequenceNumber      INT8         NOT NULL,
   type                VARCHAR(255) NOT NULL,
@@ -22,15 +22,15 @@ CREATE TABLE midas.DomainEventEntry (
   timeStamp           VARCHAR(255) NOT NULL,
   CONSTRAINT PK_DomainEventEntry PRIMARY KEY (aggregateIdentifier, sequenceNumber, type)
 );
-ALTER TABLE midas.DomainEventEntry ADD CONSTRAINT UC_DomainEventEntry_eventId UNIQUE (eventIdentifier);
-CREATE TABLE midas.SagaEntry (
+ALTER TABLE bowling.DomainEventEntry ADD CONSTRAINT UC_DomainEventEntry_eventId UNIQUE (eventIdentifier);
+CREATE TABLE bowling.SagaEntry (
   sagaId         VARCHAR(255) NOT NULL,
   revision       VARCHAR(255),
   sagaType       VARCHAR(255),
   serializedSaga OID,
   CONSTRAINT PK_SagaEntry PRIMARY KEY (sagaId)
 );
-CREATE TABLE midas.SnapshotEventEntry (
+CREATE TABLE bowling.SnapshotEventEntry (
   aggregateIdentifier VARCHAR(255) NOT NULL,
   sequenceNumber      INT8         NOT NULL,
   type                VARCHAR(255) NOT NULL,
@@ -42,26 +42,26 @@ CREATE TABLE midas.SnapshotEventEntry (
   timeStamp           VARCHAR(255) NOT NULL,
   CONSTRAINT PK_SnapshotEventEntry PRIMARY KEY (aggregateIdentifier, sequenceNumber, type)
 );
-ALTER TABLE midas.SnapshotEventEntry ADD CONSTRAINT UC_SnapshotEventEntry_eventId UNIQUE (eventIdentifier);
+ALTER TABLE bowling.SnapshotEventEntry ADD CONSTRAINT UC_SnapshotEventEntry_eventId UNIQUE (eventIdentifier);
 
 /* Axon 2.1 */
-ALTER SEQUENCE midas.hibernate_sequence
-OWNER TO midas_ddl;
-GRANT SELECT, UPDATE, INSERT, DELETE ON midas.hibernate_sequence TO midas_dml, midas;
-REVOKE ALL ON midas.hibernate_sequence FROM PUBLIC;
+ALTER SEQUENCE bowling.hibernate_sequence
+OWNER TO bowling_ddl;
+GRANT SELECT, UPDATE, INSERT, DELETE ON bowling.hibernate_sequence TO bowling_dml, bowling;
+REVOKE ALL ON bowling.hibernate_sequence FROM PUBLIC;
 
-ALTER TABLE midas.AssociationValueEntry OWNER TO midas_ddl;
-GRANT SELECT, UPDATE, INSERT, DELETE ON midas.AssociationValueEntry TO midas_dml, midas;
-REVOKE ALL ON midas.AssociationValueEntry FROM PUBLIC;
+ALTER TABLE bowling.AssociationValueEntry OWNER TO bowling_ddl;
+GRANT SELECT, UPDATE, INSERT, DELETE ON bowling.AssociationValueEntry TO bowling_dml, bowling;
+REVOKE ALL ON bowling.AssociationValueEntry FROM PUBLIC;
 
-ALTER TABLE midas.DomainEventEntry OWNER TO midas_ddl;
-GRANT SELECT, UPDATE, INSERT, DELETE ON midas.DomainEventEntry TO midas_dml, midas;
-REVOKE ALL ON midas.DomainEventEntry FROM PUBLIC;
+ALTER TABLE bowling.DomainEventEntry OWNER TO bowling_ddl;
+GRANT SELECT, UPDATE, INSERT, DELETE ON bowling.DomainEventEntry TO bowling_dml, bowling;
+REVOKE ALL ON bowling.DomainEventEntry FROM PUBLIC;
 
-ALTER TABLE midas.SagaEntry OWNER TO midas_ddl;
-GRANT SELECT, UPDATE, INSERT, DELETE ON midas.SagaEntry TO midas_dml, midas;
-REVOKE ALL ON midas.SagaEntry FROM PUBLIC;
+ALTER TABLE bowling.SagaEntry OWNER TO bowling_ddl;
+GRANT SELECT, UPDATE, INSERT, DELETE ON bowling.SagaEntry TO bowling_dml, bowling;
+REVOKE ALL ON bowling.SagaEntry FROM PUBLIC;
 
-ALTER TABLE midas.SnapshotEventEntry OWNER TO midas_ddl;
-GRANT SELECT, UPDATE, INSERT, DELETE ON midas.SnapshotEventEntry TO midas_dml, midas;
-REVOKE ALL ON midas.SnapshotEventEntry FROM PUBLIC;
+ALTER TABLE bowling.SnapshotEventEntry OWNER TO bowling_ddl;
+GRANT SELECT, UPDATE, INSERT, DELETE ON bowling.SnapshotEventEntry TO bowling_dml, bowling;
+REVOKE ALL ON bowling.SnapshotEventEntry FROM PUBLIC;

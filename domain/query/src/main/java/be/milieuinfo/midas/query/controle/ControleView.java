@@ -1,11 +1,11 @@
 package be.milieuinfo.midas.query.controle;
 
-import be.milieuinfo.midas.infra.hibernate.PostgresJsonUserType;
-import be.milieuinfo.midas.query.IsViewBuilder;
-import be.milieuinfo.midas.query.common.ColumnDefinition;
-import be.milieuinfo.midas.query.common.TypeDefs;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.common.collect.ImmutableSet;
+import com.telemis.bowling.infra.hibernate.PostgresJsonUserType;
+import com.telemis.bowling.query.IsViewBuilder;
+import com.telemis.bowling.query.common.ColumnDefinition;
+import com.telemis.bowling.query.common.TypeDefs;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;

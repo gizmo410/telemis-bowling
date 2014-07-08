@@ -14,13 +14,15 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
 
     private Integer throwNumber;
     private int numberOfSkittlesDown;
+    private int score;
 
     protected FrameThrow() {
     }
 
-    public FrameThrow(final int throwNumber, final int numberOfSkittlesDown) {
+    public FrameThrow(final int throwNumber, final int numberOfSkittlesDown, final int score) {
         this.throwNumber = throwNumber;
         this.numberOfSkittlesDown = numberOfSkittlesDown;
+        this.score = score;
     }
 
     public int getThrowNumber() {
@@ -31,11 +33,16 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
         return numberOfSkittlesDown;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("throwNumber", throwNumber)
                 .add("numberOfSkittlesDown", numberOfSkittlesDown)
+                .add("score", score)
                 .toString();
     }
 

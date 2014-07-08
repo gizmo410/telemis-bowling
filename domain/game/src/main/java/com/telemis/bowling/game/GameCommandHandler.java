@@ -2,13 +2,13 @@ package com.telemis.bowling.game;
 
 import com.telemis.bowling.domain.api.game.command.CreateGame;
 import com.telemis.bowling.domain.api.game.command.GameProceedTo;
+import com.telemis.bowling.domain.api.game.command.RegisterPlayerThrow;
+import com.telemis.bowling.domain.api.game.command.StopGame;
 import org.axonframework.commandhandling.annotation.CommandHandler;
 import org.axonframework.repository.Repository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Component handling commands regarding {@link GameAR}.
@@ -48,10 +48,27 @@ public class GameCommandHandler {
      */
     @CommandHandler
     public void handle(final GameProceedTo command) {
-        final String gameIdentifier = checkNotNull(command.getGameIdentifier(), "game identifier cannot be null");
+        final String gameIdentifier = command.getGameIdentifier();
         final GameAR gameAR = gameRepository.load(gameIdentifier);
 
         gameAR.proceedTo(command.getNewStatus());
+    }
+
+    @CommandHandler
+    public void handle(final RegisterPlayerThrow command) {
+        final String gameIdentifier = command.getGameId();
+        final GameAR gameAR = gameRepository.load(gameIdentifier);
+        final int numberOfSkittlesDown = command.getNumberOfSkittlesDown();
+
+        gameAR.currentPlayerHasPlay(numberOfSkittlesDown);
+    }
+
+    @CommandHandler
+    public void handle(final StopGame command) {
+        final String gameIdentifier = command.getGameId();
+        final GameAR gameAR = gameRepository.load(gameIdentifier);
+
+        gameAR.stopGame();
     }
 
 }

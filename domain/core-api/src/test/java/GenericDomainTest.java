@@ -1,6 +1,5 @@
 import com.google.common.collect.Lists;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,8 +42,8 @@ public class GenericDomainTest {
     private static Reflections locateAllClassesInDomainApi() {
         return new Reflections(new ConfigurationBuilder()
 				.setScanners(new SubTypesScanner(false))
-				.addUrls(ClasspathHelper.forPackage("be.milieuinfo.midas.domain.api"))
-				.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("be.milieuinfo.midas.domain.api")).exclude(".*Test.*").exclude(".*Builder.*").exclude(".*Metadatas.*").exclude(".*Constants.*")));
+				.addUrls(ClasspathHelper.forPackage("com.telemis.bowling.domain.api"))
+				.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("com.telemis.bowling.domain.api")).exclude(".*Test.*").exclude(".*Builder.*").exclude(".*Metadatas.*").exclude(".*Constants.*")));
 	}
 
     @Test
@@ -53,8 +52,6 @@ public class GenericDomainTest {
 		Assert.assertTrue(classToTest.getSimpleName() + " should be serializable.", Serializable.class.isAssignableFrom(classToTest));
     }
 
-    // TODO: Test terug in te schakelen nadat command-event plugin op punt staat
-    @Ignore()
     @Test
     public void thatOverrideToString() throws Exception {
 		LOGGER.info("Verifying toString override for {} ", classToTest);

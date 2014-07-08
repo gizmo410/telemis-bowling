@@ -15,7 +15,7 @@ public class GameProceededTo extends ProceededTo implements Serializable {
 
     private static final long serialVersionUID = -5359218483040263214L;
 
-    String gameIdentifier;
+    private String gameIdentifier;
 
     public GameProceededTo(String gameIdentifier, String exitedStatus, String enteredStatus) {
         super(exitedStatus, enteredStatus);

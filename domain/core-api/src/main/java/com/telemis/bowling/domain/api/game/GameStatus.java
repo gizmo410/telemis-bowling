@@ -5,6 +5,6 @@ package com.telemis.bowling.domain.api.game;
  */
 public enum GameStatus {
 
-    STARTED, CANCELLED, COMPLETED
+    STARTED, STOPPED, COMPLETED
 
 }

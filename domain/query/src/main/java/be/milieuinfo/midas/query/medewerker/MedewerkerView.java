@@ -1,18 +1,18 @@
 package be.milieuinfo.midas.query.medewerker;
 
-import be.milieuinfo.midas.query.IsViewBuilder;
-import be.milieuinfo.midas.query.support.Joiners;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableList;
+import com.telemis.bowling.query.IsViewBuilder;
+import com.telemis.bowling.query.common.ColumnDefinition;
+import com.telemis.bowling.query.common.TypeDefs;
+import com.telemis.bowling.query.support.Joiners;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
-import static be.milieuinfo.midas.query.common.ColumnDefinition.JSON;
-import static be.milieuinfo.midas.query.common.TypeDefs.POSTGRES_JSON_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
@@ -34,8 +34,8 @@ public class MedewerkerView {
     @Column(name = "achternaam")
     private String achternaam;
 
-    @Column(name = "rollen", columnDefinition = JSON)
-    @Type(type = POSTGRES_JSON_OBJECT, parameters = {
+    @Column(name = "rollen", columnDefinition = ColumnDefinition.JSON)
+    @Type(type = TypeDefs.POSTGRES_JSON_OBJECT, parameters = {
             @org.hibernate.annotations.Parameter(name = "resultClass", value = "java.lang.String"),
             @org.hibernate.annotations.Parameter(name = "collectionType", value = "java.util.Set")})
     private Set<String> rollen;
