@@ -7,17 +7,8 @@
 
     <import resource="infrastructure-context.xml"/>
 
-    <context:component-scan base-package="be.milieuinfo.midas.rest.controller"/>
+    <context:component-scan base-package="com.telemis.bowling.rest.controller"/>
 
-    <!--<bean id="midasUriTemplate" class="org.springframework.hateoas.UriTemplate">-->
-        <!--<constructor-arg value="http://be.milieuinfo.midas/rels/{rel}"/>-->
-    <!--</bean>-->
-
-    <!--<bean class="org.springframework.hateoas.hal.DefaultCurieProvider">-->
-        <!--<constructor-arg index="0" value="midas"/>-->
-        <!--<constructor-arg index="1" ref="midasUriTemplate"/>-->
-    <!--</bean>-->
-
-    <bean id="dataRestConfig" class="org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration" />
+    <bean id="dataRestConfig" class="org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration"/>
 
 </beans>
