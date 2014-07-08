@@ -1,5 +1,6 @@
-package be.milieuinfo.midas.ui.controller;
+package com.telemis.bowling.ui.controller;
 
+import com.telemis.bowling.ui.controller.ViewController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

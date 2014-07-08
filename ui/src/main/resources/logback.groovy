@@ -29,7 +29,7 @@ appender("log4jdbc_file", FileAppender) {
         pattern = "%d{HH:mm:ss.SSS} [%t] %level - %m%n%ex%n"
     }
 }
-logger("be.milieuinfo.midas", DEBUG)
+logger("com.telemis.bowling", DEBUG)
 logger("org.axonframework", DEBUG)
 logger("org.springframework.beans", WARN)
 logger("org.springframework.context", WARN)

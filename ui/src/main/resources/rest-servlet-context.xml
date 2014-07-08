@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <import resource="rest-context.xml"/>
-    <import resource="be/milieuinfo/midas/ui/infra/config/websocket-context.xml"/>
+    <import resource="com/telemis/bowling/ui/infra/config/websocket-context.xml"/>
 
     <mvc:annotation-driven />
 
