@@ -15,8 +15,8 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
     private Integer throwNumber;
     private int numberOfSkittlesDown;
     private int score;
-    private boolean isStrike;
-    private boolean isSpare;
+    private boolean strike;
+    private boolean spare;
 
     protected FrameThrow() {
     }
@@ -25,8 +25,8 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
         this.throwNumber = throwNumber;
         this.numberOfSkittlesDown = numberOfSkittlesDown;
         this.score = score;
-        isStrike = strike;
-        isSpare = spare;
+        this.strike = strike;
+        this.spare = spare;
     }
 
     public int getThrowNumber() {
@@ -42,11 +42,11 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
     }
 
     public boolean isStrike() {
-        return isStrike;
+        return strike;
     }
 
     public boolean isSpare() {
-        return isSpare;
+        return spare;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class FrameThrow implements Serializable, Comparable<FrameThrow> {
                 .add("throwNumber", throwNumber)
                 .add("numberOfSkittlesDown", numberOfSkittlesDown)
                 .add("score", score)
-                .add("isStrike", isStrike)
-                .add("isSpare", isSpare)
+                .add("strike", strike)
+                .add("spare", spare)
                 .toString();
     }
 
