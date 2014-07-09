@@ -19,12 +19,13 @@ import java.util.concurrent.TimeUnit;
 
 import static com.telemis.bowling.rest.controller.RestDataFixtures.standardCreateGameJSON;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Matchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
@@ -64,7 +65,8 @@ public class GamesActionControllerTest {
         assertThat(resultActions, is(notNullValue()));
         resultActions
 //                .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(equalTo(standardCreateGameJSON)));
     }
 
     @Test
@@ -78,7 +80,7 @@ public class GamesActionControllerTest {
 
         final long expectedTimeout = ControlerConstants.DEFAULT_TIMEOUT;
         final TimeUnit expectedTimeUnit = ControlerConstants.DEFAULT_TIMEUNIT;
-        verify(commandGateway).sendAndWait(any(CreateGame.class), anyString(), eq(expectedTimeout), eq(expectedTimeUnit));
+        verify(commandGateway).sendAndWait(any(CreateGame.class), eq(expectedTimeout), eq(expectedTimeUnit));
         verifyNoMoreInteractions(commandGateway);
     }
 }

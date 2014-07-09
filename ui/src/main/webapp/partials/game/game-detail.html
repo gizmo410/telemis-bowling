@@ -1,0 +1,122 @@
+<div class="panel panel-info">
+
+    <div class="panel-heading">
+        <h2 class="panel-title">Bowling Game</h2>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="container-fluid" ng-hide="gameStopped">
+
+            <div class="alert alert-info">
+                <b>{{ game.currentPlayerName }}</b>, it is your turn !
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <form name="form" class="form-horizontal" role="form" novalidate>
+
+                        <div class="form-group required">
+
+                            <label for="numberOfSkittlesDown" class="control-label col-md-7">
+                                Number of skittles down
+                            </label>
+
+                            <div class="col-md-3">
+                                <input id="numberOfSkittlesDown"
+                                       type="number"
+                                       class="form-control"
+                                       min="0"
+                                       max="15"
+                                       ng-model="numberOfSkittlesDown"
+                                       ng-required="true"/>
+                            </div>
+                        </div>
+
+                        <br/>
+
+                        <div class="btn-toolbar pull-right">
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger" ng-click="cancelGame()">
+                                    Cancel Game
+                                </button>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" ng-click="updateScore()"
+                                        ng-disabled="form.$invalid">
+                                    Play
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <br/>
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div ng-bind="players">
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid" ng-show="gameStopped">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h2>The game is over !</h2>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <form name="resultForm" class="form-horizontal" role="form">
+
+                                <div class="form-group" ng-repeat="score in scores">
+                                    <label class="col-sm-2 control-label">{{ score.playerName }}</label>
+
+                                    <div class="col-sm-10">
+                                        <p class="form-control-static">{{ score.playerScore }}</p>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="btn-toolbar">
+
+                        <div class="btn-group">
+                            <a href="#/home" class="btn btn-default">
+                                Back Home
+                            </a>
+                        </div>
+
+                        <div class="btn-group">
+                            <a href="#/newGame" class="btn btn-primary">
+                                Again !
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

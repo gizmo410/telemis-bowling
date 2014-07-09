@@ -30,12 +30,10 @@ public class NotificationAspectTest {
 
         final JoinPoint mockJoinpoint = mock(JoinPoint.class);
 
-        final String registeredBy = "Anakin Skywalker";
-
-        notificationAspect.afterQuerymodelUpdate(mockJoinpoint, GAME_CREATED, registeredBy);
+        notificationAspect.afterQuerymodelUpdate(mockJoinpoint, GAME_CREATED);
 
         final String expectedDestination = "/topic/domain-events";
-        verify(messagingTemplate).convertAndSendToUser(eq(registeredBy), eq(expectedDestination), eq(GAME_CREATED), anyMapOf(String.class, Object.class));
+        verify(messagingTemplate).convertAndSend(eq(expectedDestination), eq(GAME_CREATED), anyMapOf(String.class, Object.class));
         verifyNoMoreInteractions(messagingTemplate);
 
 

@@ -13,10 +13,8 @@ public class PlayerScoreUpdated implements Serializable {
 
     private static final long serialVersionUID = -4015341457937846387L;
 
-    // TODO Update this so that we do not need to pass the entire two players
-
     private String gameIdentifier;
-    private GamePlayer player;
+    private GamePlayer previousPlayer;
     private GamePlayer nextPlayer;
 
     protected PlayerScoreUpdated() {
@@ -24,7 +22,7 @@ public class PlayerScoreUpdated implements Serializable {
 
     PlayerScoreUpdated(final Builder builder) {
         gameIdentifier = builder.gameIdentifier;
-        player = builder.player;
+        previousPlayer = builder.previousPlayer;
         nextPlayer = builder.nextPlayer;
     }
 
@@ -32,8 +30,8 @@ public class PlayerScoreUpdated implements Serializable {
         return gameIdentifier;
     }
 
-    public GamePlayer getPlayer() {
-        return player;
+    public GamePlayer getPreviousPlayer() {
+        return previousPlayer;
     }
 
     public GamePlayer getNextPlayer() {
@@ -48,7 +46,7 @@ public class PlayerScoreUpdated implements Serializable {
     public String toString() {
         return Objects.toStringHelper(this)
                 .add("gameIdentifier", gameIdentifier)
-                .add("player", player)
+                .add("previousPlayer", previousPlayer)
                 .add("nextPlayer", nextPlayer)
                 .toString();
     }
@@ -56,7 +54,7 @@ public class PlayerScoreUpdated implements Serializable {
     public static class Builder implements IsEntityBuilder<PlayerScoreUpdated> {
 
         private String gameIdentifier;
-        private GamePlayer player;
+        private GamePlayer previousPlayer;
         private GamePlayer nextPlayer;
 
         Builder() {
@@ -67,8 +65,8 @@ public class PlayerScoreUpdated implements Serializable {
             return this;
         }
 
-        public Builder withPlayer(final GamePlayer player) {
-            this.player = player;
+        public Builder withPreviousPlayers(final GamePlayer previousPlayer) {
+            this.previousPlayer = previousPlayer;
             return this;
         }
 

@@ -1,4 +1,4 @@
-package com.telemis.bowling.game;
+package com.telemis.bowling.domain.game;
 
 import org.axonframework.test.FixtureConfiguration;
 import org.axonframework.test.Fixtures;
@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.telemis.bowling.game.DataFixtures.*;
+import static com.telemis.bowling.domain.game.DataFixtures.*;
 
 /**
  * @since 04/07/14

@@ -1,4 +1,4 @@
-package com.telemis.bowling.game;
+package com.telemis.bowling.domain.game;
 
 import com.telemis.bowling.domain.api.game.command.CreateGame;
 import com.telemis.bowling.domain.api.game.command.GameProceedTo;

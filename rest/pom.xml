@@ -42,12 +42,6 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
-        <!-- SECURITY -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-core</artifactId>
-        </dependency>
-
         <!-- TESTING -->
         <dependency>
             <groupId>junit</groupId>

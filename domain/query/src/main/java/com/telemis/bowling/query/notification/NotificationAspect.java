@@ -25,16 +25,15 @@ public class NotificationAspect {
     /**
      * Sends a notification message whenever an event updater with the @Notification annotation has been executed successfully.
      *
-     * @param joinPoint    The matching joinpoint.
-     * @param event        The event that has been passed as argument to the event updater.
-     * @param registeredBy The user identifier that has been passed as argument to the event updater.
+     * @param joinPoint The matching joinpoint.
+     * @param event     The event that has been passed as argument to the event updater.
      */
     @AfterReturning(
-            pointcut = "execution(* com.telemis.bowling.query..*(..) ) && @annotation(Notification) && args(event,registeredBy)",
-            argNames = "joinPoint,event,registeredBy")
-    public void afterQuerymodelUpdate(JoinPoint joinPoint, Object event, String registeredBy) {
+            pointcut = "execution(* com.telemis.bowling.query..*(..) ) && @annotation(Notification) && args(event)",
+            argNames = "joinPoint,event")
+    public void afterQuerymodelUpdate(JoinPoint joinPoint, Object event) {
         LOGGER.debug("pushing something to the client:" + joinPoint.toLongString());
-        messagingTemplate.convertAndSendToUser(registeredBy, QUEUE_DOMAIN_EVENTS, event, createParameters(event));
+        messagingTemplate.convertAndSend(QUEUE_DOMAIN_EVENTS, event, createParameters(event));
     }
 
     private ImmutableMap<String, Object> createParameters(Object event) {

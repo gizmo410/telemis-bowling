@@ -30,7 +30,7 @@
             <bean class="org.axonframework.eventhandling.DefaultClusterSelector">
                 <constructor-arg name="defaultCluster">
                     <bean class="org.axonframework.eventhandling.async.AsynchronousCluster">
-                        <constructor-arg name="identifier" value="midas-eventbus"/>
+                        <constructor-arg name="identifier" value="bowling-eventbus"/>
                         <constructor-arg name="executor" ref="axonExecutor"/>
                         <constructor-arg name="transactionManager" ref="axonTransactionManager"/>
                         <constructor-arg name="sequencingPolicy">
@@ -127,7 +127,7 @@
 
     <axon:saga-manager id="sagaManager" saga-repository="sagaRepository" resource-injector="resourceInjector">
         <axon:types>
-            com.telemis.bowling.game.GameSaga
+            com.telemis.bowling.domain.game.GameSaga
         </axon:types>
     </axon:saga-manager>
 

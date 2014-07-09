@@ -5,10 +5,14 @@ import com.telemis.bowling.domain.api.game.GameStatus;
 import com.telemis.bowling.domain.api.game.event.GameCreated;
 import com.telemis.bowling.domain.api.game.event.GameStopped;
 import com.telemis.bowling.domain.api.game.event.PlayerScoreUpdated;
+import com.telemis.bowling.query.notification.Notification;
 import org.axonframework.eventhandling.annotation.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * @since 08/07/14
@@ -20,13 +24,14 @@ public class GameViewUpdater {
     private GameViewRepository gameViewRepository;
 
     @EventHandler
+    @Notification
     @Transactional
     public void handle(final GameCreated event) {
 
         final GameView newGame = GameView.newBuilder()
                 .withStatus(GameStatus.STARTED)
-                .withCurrentPlayerName(event.getCurrentPlayer().getPlayerName())
-                .withPlayers(event.getPlayers())
+                .withCurrentPlayerName(event.getCurrentPlayer().getName())
+                .withPlayers(new TreeSet<>(event.getPlayers()))
                 .withId(event.getIdentifier())
                 .build();
 
@@ -35,33 +40,36 @@ public class GameViewUpdater {
     }
 
     @EventHandler
+    @Notification
     @Transactional
     public void handle(final PlayerScoreUpdated event) {
 
         final GameView game = gameViewRepository.getOne(event.getGameIdentifier());
 
-        game.setCurrentPlayerName(event.getNextPlayer().getPlayerName());
+        final SortedSet<GamePlayer> players = new TreeSet<>(game.getPlayers());
+        resetCurrentPlayer(event, players);
 
-        resetCurrentPlayer(event, game);
+        game.setCurrentPlayerName(event.getNextPlayer().getName());
+        game.setPlayers(players);
+        gameViewRepository.save(game);
 
     }
 
-    private void resetCurrentPlayer(final PlayerScoreUpdated event, final GameView game) {
-        for (GamePlayer curPlayer : game.getPlayers()) {
-            if (curPlayer.equals(event.getPlayer())) {
-                game.getPlayers().remove(curPlayer);
-                game.getPlayers().add(event.getPlayer());
+    private void resetCurrentPlayer(final PlayerScoreUpdated event, SortedSet<GamePlayer> players) {
+        for (GamePlayer curPlayer : players) {
+            if (curPlayer.equals(event.getPreviousPlayer())) {
+                players.remove(curPlayer);
+                players.add(event.getPreviousPlayer());
+                break;
             }
         }
     }
 
     @EventHandler
+    @Notification
     @Transactional
     public void handle(final GameStopped event) {
-
-        final GameView game = gameViewRepository.getOne(event.getGameIdentifier());
-        game.setStatus(event.getGameStatus());
-
+        gameViewRepository.delete(event.getGameIdentifier());
     }
 
 }

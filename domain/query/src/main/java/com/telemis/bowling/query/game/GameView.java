@@ -11,6 +11,8 @@ import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
@@ -68,8 +70,8 @@ public class GameView {
         this.status = status;
     }
 
-    public Set<GamePlayer> getPlayers() {
-        return players;
+    public SortedSet<GamePlayer> getPlayers() {
+        return new TreeSet<>(players);
     }
 
     public void setPlayers(final Set<GamePlayer> players) {

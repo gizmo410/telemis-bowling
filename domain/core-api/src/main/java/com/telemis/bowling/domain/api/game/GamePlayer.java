@@ -5,10 +5,10 @@ import com.google.common.collect.ImmutableList;
 import com.telemis.bowling.domain.api.FrameThrow;
 import com.telemis.bowling.domain.api.IsEntityBuilder;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,31 +22,30 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
     private static final int MAX_NUMBER_OF_FRAMES = 5;
     private static final int MAX_NUMBER_OF_THROWS_PER_FRAME = 3;
 
-    private Integer playerNumber;
-    private String playerName;
-    // SortedSet because we want te get the set ordered in the query model
-    private SortedSet<PlayerFrame> playerFrames;
+    private Integer number;
+    private String name;
+    private List<PlayerFrame> frames;
 
     // Needed by Axon
     protected GamePlayer() {
     }
 
     public GamePlayer(final Builder builder) {
-        this.playerNumber = checkNotNull(builder.playerNumber, "Player number cannot be null");
-        this.playerName = checkNotNull(builder.playerName, "Player name cannot be null");
-        this.playerFrames = builder.playerFrames;
+        this.number = checkNotNull(builder.number, "Player number cannot be null");
+        this.name = checkNotNull(builder.name, "Player name cannot be null");
+        this.frames = builder.frames;
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
+    public int getNumber() {
+        return number;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getName() {
+        return name;
     }
 
-    public Set<PlayerFrame> getPlayerFrames() {
-        return playerFrames;
+    public List<PlayerFrame> getFrames() {
+        return frames;
     }
 
     public static Builder newBuilder() {
@@ -56,7 +55,7 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
     public void registerScore(final int numberOfSkittlesDown) {
         final PlayerFrame currentFrame = getCurrentFrame();
 
-        if (playerFrames.size() == MAX_NUMBER_OF_FRAMES
+        if (frames.size() == MAX_NUMBER_OF_FRAMES
                 || currentFrame.getFrameThrows().size() < MAX_NUMBER_OF_THROWS_PER_FRAME) {
             currentFrame.addThrow(numberOfSkittlesDown);
         } else {
@@ -68,56 +67,153 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
 
     private PlayerFrame createAndAddNewFrame(final PlayerFrame currentFrame) {
         final int newFrameNumber = computeNewFrameNumber(currentFrame);
-        final PlayerFrame newFrame = new PlayerFrame(newFrameNumber, new TreeSet<FrameThrow>());
-        playerFrames.add(newFrame);
+        final PlayerFrame newFrame = new PlayerFrame(newFrameNumber, new LinkedList<FrameThrow>());
+        frames.add(newFrame);
         return newFrame;
     }
 
     private int computeNewFrameNumber(final PlayerFrame currentFrame) {
-        return currentFrame.getFrameNumber() + 1;
+        return currentFrame.getNumber() + 1;
     }
 
     private PlayerFrame getCurrentFrame() {
-        if (playerFrames.isEmpty()) {
+        if (frames.isEmpty()) {
             return createAndAddNewFrameToTheList();
         }
         return getLastFrame();
     }
 
     private PlayerFrame getLastFrame() {
-        final ImmutableList<PlayerFrame> frameList = ImmutableList.copyOf(playerFrames);
+        final ImmutableList<PlayerFrame> frameList = ImmutableList.copyOf(frames);
         final int lastFrameIndex = frameList.size() - 1;
         return frameList.get(lastFrameIndex);
     }
 
     private PlayerFrame createAndAddNewFrameToTheList() {
-        final PlayerFrame newPlayerFrame = new PlayerFrame(1, new TreeSet<FrameThrow>());
-        playerFrames.add(newPlayerFrame);
+        final PlayerFrame newPlayerFrame = new PlayerFrame(1, new LinkedList<FrameThrow>());
+        frames.add(newPlayerFrame);
         return newPlayerFrame;
+    }
+
+    public int computeTotalScore() {
+        int totalScore = 0;
+        for (PlayerFrame playerFrame : frames) {
+            totalScore += computeFrameScore(playerFrame);
+        }
+        return totalScore;
+    }
+
+    private int computeFrameScore(final PlayerFrame frame) {
+        int totalFrameScore = 0;
+        for (FrameThrow frameThrow : frame.getFrameThrows()) {
+            totalFrameScore += computeThrowScore(frameThrow);
+        }
+
+        return totalFrameScore;
+    }
+
+    private int computeThrowScore(final FrameThrow frameThrow) {
+        if (frameThrow == null) {
+            return 0;
+        }
+        final PlayerFrame frame = findFrameForThrow(frameThrow);
+        if (frameThrow.isStrike()) {
+            return computeScoreForStrike(frame, frameThrow);
+        } else if (frameThrow.isSpare()) {
+            return computeScoreForSpare(frame, frameThrow);
+        } else {
+            return frameThrow.getScore();
+        }
+    }
+
+    private PlayerFrame findFrameForThrow(final FrameThrow frameThrow) {
+        for (PlayerFrame frame : frames) {
+            if (frame.getFrameThrows().contains(frameThrow)) {
+                return frame;
+            }
+        }
+        return null;
+    }
+
+    private int computeScoreForStrike(final PlayerFrame frame, @Nullable final FrameThrow frameThrow) {
+
+        if (frameThrow == null) {
+            return 0;
+        }
+        int throwScore = frameThrow.getScore();
+
+        final FrameThrow secondFrameThrow = getThrow(frame, 1);
+        final FrameThrow thirdFrameThrow = getThrow(frame, 2);
+        final FrameThrow firstThrowOfNextFrame = getThrow(frame, 3);
+
+        return throwScore
+                + computeThrowScore(secondFrameThrow)
+                + computeThrowScore(thirdFrameThrow)
+                + computeThrowScore(firstThrowOfNextFrame);
+    }
+
+    private FrameThrow getThrow(final PlayerFrame frame, final int throwIndex) {
+        FrameThrow frameThrow = getThrowIfExists(frame, throwIndex);
+        if (frameThrow == null) {
+            final int frameSize = frame.getFrameThrows().size();
+            final PlayerFrame nextFrame = getNextFrameIfExists(frame);
+            frameThrow = getThrowIfExists(nextFrame, throwIndex - frameSize);
+
+        }
+        return frameThrow;
+    }
+
+    private PlayerFrame getNextFrameIfExists(final PlayerFrame frame) {
+        final int frameIndex = frames.indexOf(frame);
+        final int frameIndexSizes = frames.size() - 1;
+        return (frameIndexSizes > frameIndex) ? frames.get(frameIndex + 1) : null;
+    }
+
+    private FrameThrow getThrowIfExists(@Nullable final PlayerFrame frame, final int throwIndex) {
+        if (frame == null) {
+            return null;
+        }
+        final int throwsIndexSizes = frame.getFrameThrows().size() - 1;
+        return (throwsIndexSizes >= throwIndex) ? frame.getFrameThrows().get(throwIndex) : null;
+    }
+
+    private int computeScoreForSpare(final PlayerFrame frame, FrameThrow frameThrow) {
+        if (frameThrow == null) {
+            return 0;
+        }
+        int throwScore = frameThrow.getScore();
+
+        final int throwIndex = frame.getFrameThrows().indexOf(frameThrow);
+        final FrameThrow secondFrameThrow = getThrow(frame, throwIndex + 1);
+        final FrameThrow thirdFrameThrow = getThrow(frame, throwIndex + 2);
+
+        return throwScore
+                + computeThrowScore(secondFrameThrow)
+                + computeThrowScore(thirdFrameThrow);
     }
 
     public static class Builder implements IsEntityBuilder<GamePlayer> {
 
-        private int playerNumber;
-        private String playerName;
-        private SortedSet<PlayerFrame> playerFrames;
+        private int number;
+        private String name;
+        private List<PlayerFrame> frames;
 
         Builder() {
 
         }
 
-        public Builder withPlayerNumber(final int playerNumber) {
-            this.playerNumber = playerNumber;
+        public Builder withNumber(final int playerNumber) {
+            this.number = playerNumber;
             return this;
         }
 
-        public Builder withPlayerName(final String playerName) {
-            this.playerName = playerName;
+        public Builder withName(final String playerName) {
+            this.name = playerName;
             return this;
         }
 
-        public Builder withPlayerFrames(final SortedSet<PlayerFrame> playerFrames) {
-            this.playerFrames = playerFrames;
+        public Builder withFrames(final List<PlayerFrame> playerFrames) {
+            this.frames = playerFrames;
             return this;
         }
 
@@ -130,9 +226,9 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("playerNumber", playerNumber)
-                .add("playerName", playerName)
-                .add("playerFrames", playerFrames)
+                .add("number", number)
+                .add("name", name)
+                .add("frames", frames)
                 .toString();
     }
 
@@ -141,12 +237,12 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
         if (objectToCompareTo == null) {
             return 1;
         }
-        return playerNumber.compareTo(objectToCompareTo.playerNumber);
+        return number.compareTo(objectToCompareTo.number);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(playerNumber);
+        return Objects.hashCode(number);
     }
 
     @Override
@@ -158,6 +254,6 @@ public class GamePlayer implements Serializable, Comparable<GamePlayer> {
             return false;
         }
         final GamePlayer other = (GamePlayer) obj;
-        return Objects.equal(this.playerNumber, other.playerNumber);
+        return Objects.equal(this.number, other.number);
     }
 }

@@ -2,7 +2,6 @@ package com.telemis.bowling.rest.controller;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Throwables;
 import com.telemis.bowling.domain.api.game.command.CreateGame;
 
@@ -27,7 +26,7 @@ public class RestDataFixtures {
     public static String standardCreateGameJSON;
 
     static {
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        //mapper.enable(SerializationFeature.INDENT_OUTPUT);
         // to prevent exception when encountering unknown property:
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         // to allow coercion of JSON empty String ("") to null Object value:

@@ -1,12 +1,14 @@
-package com.telemis.bowling.game;
+package com.telemis.bowling.domain.game;
 
+import com.telemis.bowling.domain.api.CommandGateway;
+import com.telemis.bowling.domain.api.game.GamePlayer;
 import com.telemis.bowling.domain.api.game.GameStatus;
+import com.telemis.bowling.domain.api.game.PlayerFrame;
 import com.telemis.bowling.domain.api.game.command.GameProceedTo;
 import com.telemis.bowling.domain.api.game.event.GameCreated;
 import com.telemis.bowling.domain.api.game.event.GameProceededTo;
 import com.telemis.bowling.domain.api.game.event.GameStopped;
 import com.telemis.bowling.domain.api.game.event.PlayerScoreUpdated;
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.repository.Repository;
 import org.axonframework.saga.annotation.AbstractAnnotatedSaga;
 import org.axonframework.saga.annotation.EndSaga;
@@ -37,7 +39,7 @@ public class GameSaga extends AbstractAnnotatedSaga {
     @SuppressWarnings("unused")
     public void handle(final GameCreated event) {
         final GameProceedTo gameProceedTo = new GameProceedTo(event.getIdentifier(), GameStatus.STARTED.name());
-        commandGateway.send(gameProceedTo);
+        commandGateway.sendAndForget(gameProceedTo);
     }
 
     @SagaEventHandler(associationProperty = "gameIdentifier")
@@ -51,22 +53,19 @@ public class GameSaga extends AbstractAnnotatedSaga {
         }
     }
 
-    @SagaEventHandler(associationProperty = "gameIdentifier")
-    @SuppressWarnings("unused")
-    public void handle(final PlayerScoreUpdated event) {
-        final String gameIdentifier = event.getGameIdentifier();
-        final GameAR game = gameRepository.load(gameIdentifier);
-        if (isGameCompleted(game)) {
-            final GameProceedTo gameProceedTo = new GameProceedTo(gameIdentifier, GameStatus.COMPLETED.toString());
-            commandGateway.send(gameProceedTo);
-        }
-    }
+//    @SagaEventHandler(associationProperty = "gameIdentifier")
+//    @SuppressWarnings("unused")
+//    public void handle(final PlayerScoreUpdated event) {
+//        final String gameIdentifier = event.getGameIdentifier();
+//        final GameAR game = gameRepository.load(gameIdentifier);
+//        if (isGameCompletedForAllPlayers(game)) {
+//            final GameProceedTo gameProceedTo = new GameProceedTo(gameIdentifier, GameStatus.COMPLETED.toString());
+//            commandGateway.sendAndForget(gameProceedTo);
+//        }
+//    }
 
-    private boolean isGameCompleted(final GameAR game) {
-        // TODO Fill in
 
-        return false;
-    }
+//    }
 
     @EndSaga
     @SagaEventHandler(associationProperty = "gameIdentifier")

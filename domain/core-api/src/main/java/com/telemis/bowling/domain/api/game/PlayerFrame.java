@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.telemis.bowling.domain.api.FrameThrow;
 
 import java.io.Serializable;
-import java.util.SortedSet;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,17 +17,16 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
 
     private static final long serialVersionUID = 7536172485912903570L;
 
-    private Integer frameNumber;
-    // SortedSet because we want te get the set ordered in the query model
-    private SortedSet<FrameThrow> frameThrows;
+    private Integer number;
+    private List<FrameThrow> frameThrows;
     private int numberOfSkittlesLeft;
 
     protected PlayerFrame() {
     }
 
-    public PlayerFrame(final int frameNumber, final SortedSet<FrameThrow> frameThrows) {
-        checkArgument(frameNumber > 0);
-        this.frameNumber = frameNumber;
+    public PlayerFrame(final int number, final List<FrameThrow> frameThrows) {
+        checkArgument(number > 0);
+        this.number = number;
         this.frameThrows = checkNotNull(frameThrows, "throws list cannot be null");
         initializeNumberOfSkittles();
     }
@@ -41,20 +40,29 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
         }
     }
 
-    public int getFrameNumber() {
-        return frameNumber;
+    public int getNumber() {
+        return number;
     }
 
-    public SortedSet<FrameThrow> getFrameThrows() {
+    public List<FrameThrow> getFrameThrows() {
         return frameThrows;
     }
 
     public void addThrow(final int numberOfSkittlesDown) {
         checkAndUpdateNumberOfSkittlesLeft(numberOfSkittlesDown);
-        int newThrowNumber = computeNewThrowNumber();
-        int score = computeScore(numberOfSkittlesDown);
-        final FrameThrow newThrow = new FrameThrow(newThrowNumber, numberOfSkittlesDown, score);
+        final int newThrowNumber = computeNewThrowNumber();
+        final boolean isStrike = isStrike(newThrowNumber, numberOfSkittlesDown);
+        final boolean isSpare = isSpare(newThrowNumber, numberOfSkittlesDown);
+        final FrameThrow newThrow = new FrameThrow(newThrowNumber, numberOfSkittlesDown, numberOfSkittlesDown, isStrike, isSpare);
         frameThrows.add(newThrow);
+    }
+
+    private boolean isStrike(final int newThrowNumber, final int numberOfSkittlesDown) {
+        return (newThrowNumber == 0 && numberOfSkittlesDown == 15);
+    }
+
+    private boolean isSpare(final int newThrowNumber, final int numberOfSkittlesDown) {
+        return (newThrowNumber > 0 && numberOfSkittlesDown == 15);
     }
 
     private int computeNewThrowNumber() {
@@ -66,14 +74,12 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
         return newThrowNumber;
     }
 
-    private int computeScore(final int numberOfSkittlesDown) {
-        // TODO Fill in to take spares and strikes in account
-        return numberOfSkittlesDown;
-    }
-
     private void checkAndUpdateNumberOfSkittlesLeft(final int numberOfSkittlesDown) {
         checkArgument(numberOfSkittlesLeft >= numberOfSkittlesDown, "Number of skittles down cannot be greater than number of skittles left.");
         numberOfSkittlesLeft -= numberOfSkittlesDown;
+        if (numberOfSkittlesLeft == 0) {
+            numberOfSkittlesLeft = 15;
+        }
     }
 
     private FrameThrow getLastThrow() {
@@ -84,9 +90,18 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
         return throwList.get(throwList.size() - 1);
     }
 
+    public boolean doesContainStrikesOrSpares() {
+        for (FrameThrow frameThrow : frameThrows) {
+            if (frameThrow.isSpare() || frameThrow.isStrike()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hashCode(frameNumber);
+        return Objects.hashCode(number);
     }
 
     @Override
@@ -98,13 +113,13 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
             return false;
         }
         final PlayerFrame other = (PlayerFrame) obj;
-        return Objects.equal(this.frameNumber, other.frameNumber);
+        return Objects.equal(this.number, other.number);
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("frameNumber", frameNumber)
+                .add("number", number)
                 .add("frameThrows", frameThrows)
                 .toString();
     }
@@ -114,6 +129,6 @@ public class PlayerFrame implements Serializable, Comparable<PlayerFrame> {
         if (objectToCompareTo == null) {
             return 1;
         }
-        return frameNumber.compareTo(objectToCompareTo.frameNumber);
+        return number.compareTo(objectToCompareTo.number);
     }
 }

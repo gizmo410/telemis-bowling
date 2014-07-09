@@ -15,14 +15,14 @@
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="database" value="POSTGRESQL"/>
-                <property name="showSql" value="false"/>
+                <property name="showSql" value="true"/>
                 <property name="generateDdl" value="false"/>
                 <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQL9Dialect"/>
             </bean>
         </property>
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.default_schema">midas</prop>
+                <prop key="hibernate.default_schema">bowling</prop>
                 <prop key="hibernate.cache.use_second_level_cache">false</prop>
             </props>
         </property>

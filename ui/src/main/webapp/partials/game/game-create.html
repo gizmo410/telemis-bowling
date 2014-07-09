@@ -1,0 +1,62 @@
+<div class="panel panel-info">
+
+    <div class="panel-heading">
+        <h2 class="panel-title">Give me some information first</h2>
+    </div>
+
+    <div class="panel-body">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <form name="form" class="form-horizontal" role="form" novalidate>
+
+                        <div class="form-group required">
+
+                            <label for="numberOfPlayers" class="control-label col-md-6">
+                                Number of players
+                            </label>
+
+                            <div class="col-md-3">
+                                <input id="numberOfPlayers"
+                                       type="number"
+                                       class="form-control"
+                                       min="0"
+                                       max="5"
+                                       ng-model="newGame.numberOfPlayers"
+                                       ng-required="true"/>
+                            </div>
+                        </div>
+
+                        <br/>
+
+                        <div class="btn-toolbar pull-right">
+
+                            <div class="btn-group">
+                                <a class="btn btn-default" href="#/home">
+                                    Cancel
+                                </a>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary" ng-click="saveGame()"
+                                        ng-disabled="form.$invalid">
+                                    Let's Go
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

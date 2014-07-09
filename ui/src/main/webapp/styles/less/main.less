@@ -8,21 +8,22 @@
 @import "libs/ng-grid/global.less";
 @import "date_time_picker_fix.less";
 
-@FlemishYellow: #FFE615;
+//@FlemishYellow: #FFE615;
+@appBaseColor: #A6B779;
+@white: white;
 
-@navbar-default-bg: @FlemishYellow;
+@navbar-default-bg: @appBaseColor;
+@navbar-default-color: @white;
+@navbar-default-link-color: @white;
 
-@panel-info-heading-bg: @FlemishYellow;
-@panel-info-border: @FlemishYellow;
+@panel-info-heading-bg: @appBaseColor;
+@panel-info-text: @white;
+@panel-info-border: @appBaseColor;
 
 body {
   //background-color: #EEEEEE;
   background-image: url("../../images/bodybg.jpg");
   padding-top: 70px;
-}
-
-textarea {
-  resize: vertical;
 }
 
 .form-group.required .control-label:after {
@@ -41,12 +42,6 @@ textarea {
   right: 0;
   margin-right: 20px;
   z-index: 1001;
-}
-
-.logo-container {
-
-  width: 236px;
-
 }
 
 .ng-invalid.ng-dirty {

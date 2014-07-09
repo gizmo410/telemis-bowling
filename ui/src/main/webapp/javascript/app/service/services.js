@@ -6,9 +6,9 @@
 
     /* Services */
 
-    var midasServices = angular.module('midasServices', ['ngResource']);
+    var bowlingServices = angular.module('bowlingServices', ['ngResource']);
 
-    midasServices.factory('AlertService', [ '$rootScope', '$timeout',
+    bowlingServices.factory('AlertService', [ '$rootScope', '$timeout',
         function ($rootScope, $timeout) {
 
             var alertService = {};
@@ -44,103 +44,97 @@
             return alertService;
         }]);
 
-    midasServices.factory('myHttpInterceptor', [ '$q', 'AlertService', '$filter', function ($q, alertService, $filter) {
+    bowlingServices.factory('myHttpInterceptor', [ '$q', 'AlertService',
+        function ($q, alertService) {
 
-        var httpInterceptor = {},
-            errorTimeout = 5000;
+            var httpInterceptor = {},
+                errorTimeout = 5000;
 
-        httpInterceptor.handleError = function (rejection) {
-            var errorMessage;
-            if (rejection.status === 500) {
-                errorMessage = $filter('translate')('general_internal_error');
-            } else if (rejection.status === 404) {
-                errorMessage = $filter('translate')('general_not_found_error');
-            }
-            alertService.add('danger', errorMessage, errorTimeout);
-        };
+            httpInterceptor.handleError = function (rejection) {
+                var errorMessage;
+                if (rejection.status === 500) {
+                    errorMessage = 'Oops... An unexpected error has occured';
+                } else if (rejection.status === 404) {
+                    errorMessage = 'You little rascal ! You just tried to get a resource that does not exist';
+                }
+                alertService.add('danger', errorMessage, errorTimeout);
+            };
 
-        httpInterceptor.request = function (config) {
-            // do something on success
-            return config;
-        };
+            httpInterceptor.request = function (config) {
+                // do something on success
+                return config;
+            };
 
-        httpInterceptor.requestError = function (rejection) {
-            // do something on error
-            httpInterceptor.handleError(rejection);
-            return $q.reject(rejection);
-        };
+            httpInterceptor.requestError = function (rejection) {
+                // do something on error
+                httpInterceptor.handleError(rejection);
+                return $q.reject(rejection);
+            };
 
-        httpInterceptor.response = function (response) {
-            // do something on success
-            return response;
-        };
+            httpInterceptor.response = function (response) {
+                // do something on success
+                return response;
+            };
 
-        httpInterceptor.responseError = function (rejection) {
-            // do something on error
-            httpInterceptor.handleError(rejection);
-            return $q.reject(rejection);
-        };
+            httpInterceptor.responseError = function (rejection) {
+                // do something on error
+                httpInterceptor.handleError(rejection);
+                return $q.reject(rejection);
+            };
 
-        return httpInterceptor;
-    }]);
+            return httpInterceptor;
+        }]);
 
-    midasServices.factory('MessageService', [ 'AlertService', '$timeout', function (alertService, $timeout) {
+    bowlingServices.factory('MessageService', [ 'AlertService', '$timeout', '$rootScope',
+        function (alertService, $timeout, $rootScope) {
 
-        var errorTimeout = 5000,
-            infoTimeout = 3000,
-            mySocket = {},
-            sockjs = new SockJS('http://localhost:8080/midas/rest/stomp'),
-            stomp = Stomp.over(sockjs);
+            var errorTimeout = 5000,
+                infoTimeout = 3000,
+                notificationTimeout = 10,
+                mySocket = {},
+                sockjs = new SockJS('http://localhost:8080/bowling/rest/stomp'),
+                stomp = Stomp.over(sockjs);
 
-        mySocket.notify = function (message) {
-            console.log('message received : ' + message);
-            alertService.add('info', message.data, infoTimeout);
-        };
+            mySocket.notify = function (message) {
+                $timeout(function () {
+                    var eventName = 'event:' + message.headers.clazz;
+                    $rootScope.$broadcast(eventName, JSON.parse(message.body));
+                }, notificationTimeout);
+            };
 
-        mySocket.connect = function () {
-            stomp.connect({},
-                // Connect callback
-                function () {
-                    stomp.subscribe("/topic", mySocket.notify);
+            mySocket.connect = function () {
+                stomp.connect({},
+                    // Connect callback
+                    function () {
+                        stomp.subscribe("/topic/domain-events", mySocket.notify);
 
-                },
-                // Error callback
-                function () {
-                    $timeout(function () {
-                        alertService.add('danger', 'TODO connection broken', errorTimeout);
-                    }, 10);
-                });
-        };
+                    },
+                    // Error callback
+                    function () {
+                        $timeout(function () {
+                            alertService.add('danger', 'Connection broken', errorTimeout);
+                        }, notificationTimeout);
+                    });
+            };
 
-        mySocket.disconnect = function () {
-            stomp.disconnect();
-        };
+            mySocket.disconnect = function () {
+                stomp.disconnect();
+            };
 
-        return mySocket;
-    }]);
+            return mySocket;
+        }]);
 
 
     // Resource services
 
-    midasServices.factory('Medewerker', ['$resource',
+    bowlingServices.factory('Game', ['$resource',
         function ($resource) {
-            return $resource('/midas/rest/medewerkers', {}, {});
-        }]);
-
-    midasServices.factory('Control', ['$resource',
-        function ($resource) {
-            return $resource('/midas/rest/controles/:controlId', {uniekeSleutel: '@controlId'}, {
+            return $resource('/bowling/rest/games/:gameId', {identifier: '@gameId'}, {
                 'query': { method: 'GET', isArray: false },
-                'save': { method: 'POST', url: '/midas/rest/controles/action' },
-                'update': { method: 'PUT', url: '/midas/rest/controles/:controlId/action' },
-                'delete': { method: 'DELETE', url: '/midas/rest/controles/:controlId/action' }
-            });
-        }]);
-
-    midasServices.factory('User', ['$resource',
-        function ($resource) {
-            return $resource('/midas/rest/users', {}, {
-                'loggedIn': { method: 'GET', url: '/midas/rest/users/loggedIn' }
+                'get': {  method: 'GET', url: '/bowling/rest/games/:gameId', isArray: false},
+                'save': { method: 'POST', url: '/bowling/rest/games/action' },
+                'update': { method: 'PUT', url: '/bowling/rest/games/:gameId/action' },
+                'delete': { method: 'DELETE', url: '/bowling/rest/games/:gameId/action' }
             });
         }]);
 

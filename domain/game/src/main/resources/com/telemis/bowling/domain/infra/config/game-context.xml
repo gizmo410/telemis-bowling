@@ -6,7 +6,7 @@
        http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core.xsd">
 
     <axon:event-sourcing-repository id="gameRepository"
-                                    aggregate-type="com.telemis.bowling.game.GameAR"
+                                    aggregate-type="com.telemis.bowling.domain.game.GameAR"
                                     event-bus="eventBus" event-store="eventStore"/>
 
     <!--<bean class="org.axonframework.eventsourcing.HybridJpaRepository">-->

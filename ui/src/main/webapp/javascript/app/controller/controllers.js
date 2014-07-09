@@ -6,25 +6,19 @@
 
     /* Controllers */
 
-    var midasControllers = angular.module('midasControllers', []);
+    var bowlingControllers = angular.module('bowlingControllers', []);
 
-    midasControllers.controller('MainCtrl', ['$scope', '$location', 'User',
-        function ($scope, $location, User) {
-
-            $scope.user = User.loggedIn();
+    bowlingControllers.controller('MainCtrl', ['$scope', '$location',
+        function ($scope, $location) {
 
             $scope.isActiveLink = function (page) {
                 var currentRoute = $location.path().substring(1) || 'home';
                 return page === currentRoute ? 'active' : '';
             };
 
-            $scope.zoeken = function () {
-                window.alert("TODO: Stay tuned !");
-            };
-
         }]);
 
-    midasControllers.controller('AlertCtrl', ['$scope', 'AlertService',
+    bowlingControllers.controller('AlertCtrl', ['$scope', 'AlertService',
         function ($scope, alertService) {
 
             $scope.closeAlert = function (index) {
@@ -33,88 +27,92 @@
 
         }]);
 
-    midasControllers.controller('HomeCtrl', ['$scope', 'Control', '$http',
-        function ($scope, Control, $http) {
+    bowlingControllers.controller('HomeCtrl', ['$scope', '$http',
+        function ($scope, $http) {
 
-            $scope.addNotification = function () {
-                $http.get('/midas/rest/toto');
+            $scope.testNotification = function () {
+                $http.get('/bowling/rest/lost');
             };
 
         }]);
 
-    midasControllers.controller('ControlListCtrl', ['$scope', 'Control',
-        function ($scope, Control) {
+    bowlingControllers.controller('GameDetailCtrl', ['$scope', '$routeParams', 'Game',
+        function ($scope, $routeParams, Game) {
 
-            // Remember it is async !
-            $scope.controls = Control.query();
+            var getGameSuccessCallback,
+                getGame;
 
-            $scope.filterOptions = {
-                filterText: "",
-                useExternalFilter: true
-            };
-            $scope.totalServerItems = 0;
-            $scope.pagingOptions = {
-                pageSizes: [25, 50, 100],
-                pageSize: 25,
-                currentPage: 1
+            getGameSuccessCallback = function (game) {
+                if (game) {
+                    $scope.game = game;
+                    $scope.players = JSON.stringify(game.players);
+                    console.log(JSON.stringify(game.players));
+                }
             };
 
-            // TODO fill in to configure data fetch whenever paging/filtering options changes
-
-            $scope.gridOptions = {
-                data: 'controls',
-                enablePaging: true,
-                showFooter: true,
-                totalServerItems: 'totalServerItems',
-                pagingOptions: $scope.pagingOptions,
-                filterOptions: $scope.filterOptions
+            getGame = function () {
+                Game.get({gameId: $routeParams.gameId}, getGameSuccessCallback);
             };
 
-        }]);
+            getGame();
 
-    midasControllers.controller('ControlDetailCtrl', ['$scope', '$routeParams', 'Control',
-        function ($scope, $routeParams, Control) {
-            $scope.control = Control.get({uniekeSleutel: $routeParams.controlId}, function (control) {
-                //$scope.mainImageUrl = phone.images[0];
+
+            $scope.$on('event:GameStopped', function (event, data) {
+                console.log('event:GameStopped');
+                $scope.gameStopped = true;
+                $scope.scores = data.playerScores;
             });
+
+            $scope.$on('event:PlayerScoreUpdated', function (event, data) {
+                console.log('event:PlayerScoreUpdated');
+                $scope.numberOfSkittlesDown = undefined;
+                getGame();
+            });
+
+            $scope.cancelGame = function () {
+                Game.delete({gameId: $routeParams.gameId});
+            };
+
+            $scope.updateScore = function () {
+                var playerScore = new Game({
+                    "gameId": $routeParams.gameId,
+                    "numberOfSkittlesDown": $scope.numberOfSkittlesDown
+                });
+
+                playerScore.$update({gameId: $routeParams.gameId});
+
+            };
+
         }]);
 
-    midasControllers.controller('ControlCreateCtrl', [ '$scope', 'Control', function ($scope, Control) {
+    bowlingControllers.controller('GameCreateCtrl', [ '$scope', 'Game', '$location', function ($scope, Game, $location) {
 
-        $scope.popover = {title: 'TODO Title', content: 'Hello Popover<br />This is a multiline message!'};
+        $scope.$on('event:GameCreated', function (event, data) {
+            $location.path('/games/' + data.identifier);
+        });
 
-        var defaultControle = {
+        var defaultGame = {
+            numberOfPlayers: 2
         };
 
-        $scope.nieuwControle = angular.copy(defaultControle);
-
-//        $scope.addUntilDate = function () {
-//            $scope.newControl.withUntilDate = true;
-//        };
-//
-//        $scope.removeUntilDate = function () {
-//            $scope.newControl.withUntilDate = undefined;
-//        };
+        $scope.newGame = angular.copy(defaultGame);
 
 //        $scope.resetForm = function () {
 //            $scope.newControl = angular.copy(defaultControl);
 //            $scope.form.$setPristine();
 //        };
 
-        $scope.isUnchanged = function (controle) {
-            return angular.equals(controle, defaultControle);
+        $scope.isUnchanged = function (game) {
+            return angular.equals(game, defaultGame);
         };
 
-        $scope.saveControle = function () {
+        $scope.saveGame = function () {
 
-            var testCommand = new Control({
-                uitvoerendToezichthouder: "me & my guitar",
-                onderwerp: "onderwerp",
-                programmaOnderdelen: ["programma onderdelen"],
-                internBegeleider: ["intern begeleider"]
+            var newGame = new Game({
+                numberOfPlayers: $scope.newGame.numberOfPlayers
             });
 
-            testCommand.$save();
+            newGame.$save();
         };
 
     }]);

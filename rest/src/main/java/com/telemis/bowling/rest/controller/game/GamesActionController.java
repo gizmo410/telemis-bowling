@@ -2,7 +2,6 @@ package com.telemis.bowling.rest.controller.game;
 
 import com.telemis.bowling.domain.api.CommandGateway;
 import com.telemis.bowling.domain.api.game.command.CreateGame;
-import com.telemis.bowling.rest.support.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpStatus;
@@ -45,8 +44,8 @@ public class GamesActionController {
 
     @RequestMapping(method = RequestMethod.POST)
     ResponseEntity create(@RequestBody CreateGame command) {
-        commandGateway.sendAndWait(command, SecurityUtils.getAuthenticatedUser(), DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
-        return new ResponseEntity<>(HttpStatus.OK);
+        commandGateway.sendAndWait(command, DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
+        return new ResponseEntity<>(command, HttpStatus.OK);
     }
 
 

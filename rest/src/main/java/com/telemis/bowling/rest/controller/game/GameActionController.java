@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.telemis.bowling.domain.api.CommandGateway;
 import com.telemis.bowling.domain.api.game.command.RegisterPlayerThrow;
 import com.telemis.bowling.domain.api.game.command.StopGame;
-import com.telemis.bowling.rest.support.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -46,12 +45,8 @@ public class GameActionController {
         final List<Link> links = Lists.newArrayList();
         links.add(linkTo(methodOn(GameActionController.class).listCommands(id)).withSelfRel());
         links.add(linkTo(methodOn(GameActionController.class).update(id, createDummyRegisterPlayerThrow())).withRel("registerPlayerThrow"));
-        links.add(linkTo(methodOn(GameActionController.class).delete(id, createDummyStopGame())).withRel("stopGame"));
+        links.add(linkTo(methodOn(GameActionController.class).delete(id)).withRel("stopGame"));
         return links;
-    }
-
-    private StopGame createDummyStopGame() {
-        return new StopGame(DUMMY_GAME_IDENTIFIER);
     }
 
     private RegisterPlayerThrow createDummyRegisterPlayerThrow() {
@@ -60,13 +55,14 @@ public class GameActionController {
 
     @RequestMapping(method = RequestMethod.PUT)
     ResponseEntity update(@PathVariable("id") String id, @RequestBody final RegisterPlayerThrow registerPlayerThrow) {
-        commandGateway.sendAndWait(registerPlayerThrow, SecurityUtils.getAuthenticatedUser(), DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
+        commandGateway.sendAndWait(registerPlayerThrow, DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    ResponseEntity delete(@PathVariable("id") String id, @RequestBody final StopGame stopGame) {
-        commandGateway.sendAndWait(stopGame, SecurityUtils.getAuthenticatedUser(), DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
+    ResponseEntity delete(@PathVariable("id") String id) {
+        final StopGame stopGame = new StopGame(id);
+        commandGateway.sendAndWait(stopGame, DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
